@@ -68,10 +68,6 @@ BEFORE INSERT OR UPDATE ON empregados
 FOR EACH ROW
 EXECUTE FUNCTION verificar_salario();
 
-INSERT INTO empregados (emp_id, dep_id, supervisor_id, nome, salario)
-VALUES
- (12,1,0,'Wood','300');
-
 
 
 CREATE TABLE total_salarios_departamento (
@@ -80,6 +76,7 @@ CREATE TABLE total_salarios_departamento (
 );
 
 
+//------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION calcular_total_salario_departamento()
 RETURNS TRIGGER AS $$
 BEGIN
