@@ -7,10 +7,23 @@ def getLog (name, con):
     createTable(con)
     file = open(name, "r")
     data = file.readlines()
+    #initSimulation(con, data[:data.index("\n")])
     data = data[data.index("\n")+1:]
     data.reverse()
     file.close()
     return data
+
+
+def remove_transaction(data, transaction_to_remove):
+    result = []
+
+    for line in data:
+        log = line[1:-2]
+
+        if transaction_to_remove not in log:
+            result.append(line)
+
+    return result
 
 
 
@@ -19,3 +32,33 @@ def getLog (name, con):
 def createTable(con):
     cur = con.cursor()
     cur.execute("create table if not exist teste(id integer, A integer, B integer)")
+    
+    
+    
+    
+    
+# inicia a conexão com o banco de dados e obtém o arquivo de log
+con={
+    'database':'work',
+    'user' : 'postgres',
+    'password': 'kerby3948',
+    'host': 'localhost',
+    'port': '5432'
+}
+
+data=getLog("logs/entradaLog", con)
+try:
+    data = psycopg2.connect(**con)
+    print("Conexão com o banco de dados PostgreSQL bem-sucedida.")
+    
+        # Fechar a conexão com o banco de dados
+    data.close()
+    print("Conexão com o banco de dados PostgreSQL encerrada.")
+except Exception as e:
+        print(f"Erro ao conectar ao banco de dados PostgreSQL: {e}")
+
+
+
+
+
+    
