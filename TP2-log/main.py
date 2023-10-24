@@ -25,6 +25,25 @@ def remove_transaction(data, transaction_to_remove):
 
     return result
 
+# encontre os checkpoints finalizados no arquivo de log
+def findCheckpoint(data):
+    stack = []
+    after_checkpoint = []
+    undid_transactions = []
+
+    for line in data:
+        if line == "<start CKPT>\n":
+            stack.append(True)
+        if len(stack) > 0:
+            if stack[-1] and line == "<end CKPT>\n":
+                stack.pop()
+            if stack[-1]:
+                after_checkpoint.append(line)
+            elif line.startswith("Transação") and "realizou UNDO" in line:
+                undid_transactions.append(line)
+    
+    return data, after_checkpoint, undid_transactions
+
 
 
 
