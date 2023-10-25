@@ -106,7 +106,42 @@ def initSimulation(con, data):
         sql = f"insert into teste(id, a, b) values{i[0], i[1], i[2]}"
         cur.execute(sql)
     con.commit()
-
-
-
     
+    
+    
+    
+# Função para realizar a operação UNDO em uma transação
+def undo_transaction(con, transaction_id):
+    cur = con.cursor()
+   # Reverter uma atualização 
+    original_data = {"id": 1, "value": "valor_original"}
+    sql = "UPDATE minha_tabela SET coluna = %s WHERE id = %s"
+    cur.execute(sql, (original_data["value"], original_data["id"]))
+    
+    # Comita a transação UNDO
+    con.commit()
+    return f"Transação {transaction_id} realizou UNDO"
+    # Feche a conexão com o banco de dados
+con.close()
+
+
+# removing checkpoints and uncommitted transitions
+def remove_checkpoints_and_uncommitted(data):
+    cleaned_data = []
+    inside_checkpoint = False
+
+    for line in data:
+        if line.startswith("<start CKPT>"):
+            inside_checkpoint = True
+        elif line.startswith("<end CKPT>"):
+            inside_checkpoint = False
+        elif "realizou UNDO" in line:
+            # Skip lines related to UNDO operations
+            continue
+        elif not inside_checkpoint:
+            cleaned_data.append(line)
+
+    return cleaned_data
+
+
+data= undo_transaction(data)
