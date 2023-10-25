@@ -79,5 +79,34 @@ except Exception as e:
 
 
 
+#teste e insere os valores de inicialização da simulação
+def initSimulation(con, data):
+    cur = con.cursor()
+    cur.execute("truncate teste")
+    con.commit()
+
+    insertMap = []
+
+    for line in data:
+        temp = line.split(",")
+        value = temp[1].split("=")[1]
+
+        separator = ""
+        if " " in value:
+            separator += " "
+        separator += "\n"
+        
+        insertMap.append({"column": temp[0], "id": temp[1].split("=")[0], "value": value[:value.index(separator)]})  
+    tuple = []
+    for i in insertMap:
+        for j in insertMap:
+            if i["id"] == j["id"] and j["column"] != i["column"] and len(tuple) < len(insertMap)/2:
+                tuple.append([i["id"], i["value"], j["value"]])
+    for i in tuple:
+        sql = f"insert into teste(id, a, b) values{i[0], i[1], i[2]}"
+        cur.execute(sql)
+    con.commit()
+
+
 
     
