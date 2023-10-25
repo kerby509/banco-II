@@ -145,3 +145,23 @@ def remove_checkpoints_and_uncommitted(data):
 
 
 data= undo_transaction(data)
+
+# print the final table
+
+cur = con.cursor()
+query = "SELECT * FROM teste"
+cur.execute(query)
+rows = cur.fetchall()
+# Print the header (column names)
+column_names = [desc[0] for desc in cur.description]
+print(", ".join(column_names))
+
+# Print the data rows
+for row in rows:
+    print(", ".join(str(cell) for cell in row))
+
+# Close the cursor and database connection
+cur.close()
+con.close()
+
+
